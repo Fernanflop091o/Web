@@ -3,77 +3,63 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Juego de Adivinanzas</title>
-<style>
-  body {
-    font-family: Arial, sans-serif;
-  }
-  #container {
-    text-align: center;
-    margin-top: 50px;
-  }
-  #question {
-    font-size: 24px;
-    margin-bottom: 20px;
-  }
-  #output {
-    font-size: 20px;
-    margin-bottom: 20px;
-  }
-</style>
+<title>Subir Videos y Fotos</title>
 </head>
 <body>
-  <div id="container">
-    <h1>Juego de Adivinanzas</h1>
-    <p id="question"></p>
-    <input type="text" id="guess" placeholder="Introduce tu respuesta">
-    <button onclick="checkGuess()">Adivinar</button>
-    <p id="output"></p>
-  </div>
+  <h1>Subir Videos y Fotos</h1>
 
+  <!-- Formulario para subir videos -->
+  <h2>Subir Video</h2>
+  <input type="file" accept="video/*" id="videoFile">
+  <button onclick="uploadVideo()">Subir Video</button>
+
+  <!-- Formulario para subir fotos -->
+  <h2>Subir Foto</h2>
+  <input type="file" accept="image/*" id="photoFile">
+  <button onclick="uploadPhoto()">Subir Foto</button>
+
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js"></script>
   <script>
-    // Array de preguntas y respuestas
-    const questions = [
-      { question: 'Blanco por dentro, verde por fuera. Si quieres que te lo diga, espera.', answer: 'La pera' },
-      { question: 'Dicen que camina, dicen que vuela. Pero siempre está quieto en una escuela.', answer: 'El libro' },
-      { question: 'Por mucho que corras, no lo podrás alcanzar. Ni aunque corras toda una mañana detrás.', answer: 'El horizonte' }
-      // Agrega más preguntas y respuestas aquí
-    ];
+    // Configuración de Firebase
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_AUTH_DOMAIN",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_STORAGE_BUCKET",
+      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
 
-    let currentQuestionIndex = 0;
+    // Inicializar Firebase
+    firebase.initializeApp(firebaseConfig);
 
-    function displayQuestion() {
-      const questionElement = document.getElementById('question');
-      questionElement.textContent = questions[currentQuestionIndex].question;
+    // Referencia al almacenamiento en la nube
+    const storage = firebase.storage();
+
+    // Función para subir videos
+    function uploadVideo() {
+      const videoFile = document.getElementById('videoFile').files[0];
+      const storageRef = storage.ref();
+      const videoRef = storageRef.child('videos/' + videoFile.name);
+      videoRef.put(videoFile).then(() => {
+        alert('¡Video subido exitosamente!');
+      }).catch((error) => {
+        console.error('Error al subir el video:', error);
+      });
     }
 
-    function checkGuess() {
-      const guessInput = document.getElementById('guess');
-      const guess = guessInput.value.toLowerCase();
-      const answer = questions[currentQuestionIndex].answer.toLowerCase();
-
-      if (guess === answer) {
-        document.getElementById('output').innerText = '¡Correcto! ¡Has adivinado la respuesta!';
-      } else {
-        document.getElementById('output').innerText = '¡Incorrecto! La respuesta correcta es: ' + answer;
-      }
-
-      // Limpiar el campo de adivinanza después de cada intento
-      guessInput.value = '';
-
-      // Mostrar la siguiente pregunta o mensaje de finalización
-      currentQuestionIndex++;
-      if (currentQuestionIndex < questions.length) {
-        displayQuestion();
-      } else {
-        document.getElementById('question').textContent = '¡Fin del juego!';
-        document.getElementById('guess').style.display = 'none';
-        document.querySelector('button').style.display = 'none';
-      }
+    // Función para subir fotos
+    function uploadPhoto() {
+      const photoFile = document.getElementById('photoFile').files[0];
+      const storageRef = storage.ref();
+      const photoRef = storageRef.child('photos/' + photoFile.name);
+      photoRef.put(photoFile).then(() => {
+        alert('¡Foto subida exitosamente!');
+      }).catch((error) => {
+        console.error('Error al subir la foto:', error);
+      });
     }
-
-    // Mostrar la primera pregunta al cargar la página
-    displayQuestion();
   </script>
 </body>
 </html>
