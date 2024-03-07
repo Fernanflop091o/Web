@@ -1,79 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mis Videos</title>
-    <style>
-        .boton {
-            display: inline-block;
-            padding: 10px 20px;
-            font-size: 16px;
-            color: #fff;
-            text-align: center;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            background-color: #ff0000; /* Rojo */
-        }
-        
-        #videoContainer {
-            max-width: 100%;
-            max-height: 50vh; /* Altura máxima del contenedor de video */
-            overflow: auto;
-        }
-        
-        #videoContainer video {
-            max-width: 100%;
-            max-height: 100%; /* Altura máxima del video */
-            width: auto;
-            height: auto; /* Altura automática del video */
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mini Juego de Adivinanza</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+  }
+  #container {
+    text-align: center;
+    margin-top: 50px;
+  }
+  #output {
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+</style>
 </head>
 <body>
-    <h1>Mis Videos</h1>
-    <p>Selecciona un video:</p>
-    
-    <input type="file" accept="video/*" id="videoInput">
-    <button class="boton" onclick="cargarVideo()">Subir Video</button>
-    
-    <div id="videoContainer"></div>
-    
-    <script>
-        function cargarVideo() {
-            const input = document.getElementById('videoInput');
-            const videoContainer = document.getElementById('videoContainer');
-            
-            const file = input.files[0];
-            if (!file) {
-                alert("Por favor, selecciona un video.");
-                return;
-            }
-            
-            const videoURL = URL.createObjectURL(file);
-            
-            const video = document.createElement('video');
-            video.src = videoURL;
-            video.controls = true;
-            
-            videoContainer.innerHTML = '';
-            videoContainer.appendChild(video);
+  <div id="container">
+    <h1>Mini Juego de Adivinanza</h1>
+    <p>Estoy pensando en un número entre 1 y 100. ¿Puedes adivinar cuál es?</p>
+    <input type="number" id="guess" placeholder="Introduce tu adivinanza">
+    <button onclick="checkGuess()">Adivinar</button>
+    <p id="output"></p>
+  </div>
 
-            // Abrir el enlace automáticamente después de 6 segundos
-            setTimeout(abrirEnlace, 6000);
-        }
+  <script>
+    // Generar un número aleatorio entre 1 y 100
+    const randomNumber = Math.floor(Math.random() * 100) + 1;
 
-        function abrirEnlace() {
-            // Abrir el enlace en una nueva pestaña
-            window.open('https://www.xnxx.com/search/videos+xxx+en+espanol?top', '_blank');
-                   window.open('http://127.0.0.1:3000/');
-                                      window.open('http://127.0.0.1:3000/');
-                                                         window.open('https://www.xnxx.com/search/videos+xxx+en+espanol?top', '_blank');
-        }
+    function checkGuess() {
+      const guessInput = document.getElementById('guess');
+      const guess = parseInt(guessInput.value);
 
-        // Función para evitar que al retroceder se vuelva a cargar la página de inicio
-        window.history.replaceState(null, document.title, window.location.href);
-    </script>
+      if (guess === randomNumber) {
+        document.getElementById('output').innerText = '¡Felicidades! ¡Has adivinado el número correcto!';
+      } else if (guess < randomNumber) {
+        document.getElementById('output').innerText = 'Demasiado bajo. Intenta de nuevo.';
+      } else {
+        document.getElementById('output').innerText = 'Demasiado alto. Intenta de nuevo.';
+      }
+
+      // Limpiar el campo de adivinanza después de cada intento
+      guessInput.value = '';
+    }
+  </script>
 </body>
 </html>
