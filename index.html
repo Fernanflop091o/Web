@@ -9,13 +9,12 @@
     margin: 0;
     padding: 0;
     overflow: hidden;
+    background-color: #f7f7f7;
   }
   #game {
     width: 100%;
     height: 100%;
-    background-color: #f7f7f7;
     position: relative;
-    overflow: hidden;
   }
   #dinosaur {
     width: 50px;
@@ -24,7 +23,7 @@
     position: absolute;
     bottom: 0;
     left: 50px;
-    transition: bottom 0.2s ease-in-out;
+    animation: jump 0.2s ease-in-out infinite alternate;
   }
   #cactus {
     width: 20px;
@@ -32,7 +31,16 @@
     background-color: #008000;
     position: absolute;
     bottom: 0;
-    right: -20px;
+    right: 0;
+    animation: move 2s linear infinite;
+  }
+  @keyframes jump {
+    from { bottom: 0; }
+    to { bottom: 100px; }
+  }
+  @keyframes move {
+    from { right: 0; }
+    to { right: 100%; }
   }
 </style>
 </head>
@@ -43,40 +51,20 @@
   </div>
 
   <script>
-    const dinosaur = document.getElementById('dinosaur');
-    const cactus = document.getElementById('cactus');
-
-    // Función para saltar el dinosaurio
-    function jump() {
-      if (dinosaur.style.bottom !== '100px') {
-        dinosaur.style.bottom = '100px';
-        setTimeout(() => {
-          dinosaur.style.bottom = '0';
-        }, 200);
-      }
-    }
-
-    // Detectar teclas de flecha hacia arriba y espacio para saltar
+    // Detectar tecla de espacio para saltar
     document.addEventListener('keydown', (event) => {
-      if (event.key === 'ArrowUp' || event.code === 'Space') {
+      if (event.code === 'Space') {
         jump();
       }
     });
 
-    // Animar el cactus moviéndolo hacia la izquierda
-    setInterval(() => {
-      cactus.style.right = parseInt(cactus.style.right) + 5 + 'px';
-      if (parseInt(cactus.style.right) >= window.innerWidth) {
-        cactus.style.right = '-20px';
-      }
-      // Detectar colisión entre el dinosaurio y el cactus
-      const dinosaurBottom = parseInt(dinosaur.style.bottom);
-      const cactusRight = parseInt(cactus.style.right);
-      if (cactusRight < 100 && cactusRight > 0 && dinosaurBottom === 0) {
-        alert('Game Over');
-        location.reload(); // Recargar la página para reiniciar el juego
-      }
-    }, 50);
+    // Función para saltar el dinosaurio
+    function jump() {
+      const dinosaur = document.getElementById('dinosaur');
+      dinosaur.style.animation = 'none'; // Detener la animación actual
+      dinosaur.offsetHeight; // Triggers reflow
+      dinosaur.style.animation = 'jump 0.2s ease-in-out'; // Reiniciar la animación
+    }
   </script>
 </body>
 </html>
