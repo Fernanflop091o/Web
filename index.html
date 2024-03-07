@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Juego de Adivinar Adivinanzas</title>
+<title>Juego de Adivinanzas</title>
 <style>
   body {
     font-family: Arial, sans-serif;
@@ -11,6 +11,10 @@
   #container {
     text-align: center;
     margin-top: 50px;
+  }
+  #question {
+    font-size: 24px;
+    margin-bottom: 20px;
   }
   #output {
     font-size: 20px;
@@ -20,30 +24,56 @@
 </head>
 <body>
   <div id="container">
-    <h1>Juego de Adivinar Adivinanzas</h1>
-    <p>Adivina la palabra oculta:</p>
-    <input type="text" id="guess" placeholder="Introduce tu adivinanza">
+    <h1>Juego de Adivinanzas</h1>
+    <p id="question"></p>
+    <input type="text" id="guess" placeholder="Introduce tu respuesta">
     <button onclick="checkGuess()">Adivinar</button>
     <p id="output"></p>
   </div>
 
   <script>
-    // Palabra oculta para adivinar
-    const hiddenWord = 'elefante';
+    // Array de preguntas y respuestas
+    const questions = [
+      { question: 'Blanco por dentro, verde por fuera. Si quieres que te lo diga, espera.', answer: 'La pera' },
+      { question: 'Dicen que camina, dicen que vuela. Pero siempre está quieto en una escuela.', answer: 'El libro' },
+      { question: 'Por mucho que corras, no lo podrás alcanzar. Ni aunque corras toda una mañana detrás.', answer: 'El horizonte' }
+      // Agrega más preguntas y respuestas aquí
+    ];
+
+    let currentQuestionIndex = 0;
+
+    function displayQuestion() {
+      const questionElement = document.getElementById('question');
+      questionElement.textContent = questions[currentQuestionIndex].question;
+    }
 
     function checkGuess() {
       const guessInput = document.getElementById('guess');
       const guess = guessInput.value.toLowerCase();
+      const answer = questions[currentQuestionIndex].answer.toLowerCase();
 
-      if (guess === hiddenWord) {
-        document.getElementById('output').innerText = '¡Felicidades! ¡Has adivinado la palabra correcta!';
+      if (guess === answer) {
+        document.getElementById('output').innerText = '¡Correcto! ¡Has adivinado la respuesta!';
       } else {
-        document.getElementById('output').innerText = '¡Incorrecto! Inténtalo de nuevo.';
+        document.getElementById('output').innerText = '¡Incorrecto! La respuesta correcta es: ' + answer;
       }
 
       // Limpiar el campo de adivinanza después de cada intento
       guessInput.value = '';
+
+      // Mostrar la siguiente pregunta o mensaje de finalización
+      currentQuestionIndex++;
+      if (currentQuestionIndex < questions.length) {
+        displayQuestion();
+      } else {
+        document.getElementById('question').textContent = '¡Fin del juego!';
+        document.getElementById('guess').style.display = 'none';
+        document.querySelector('button').style.display = 'none';
+      }
     }
+
+    // Mostrar la primera pregunta al cargar la página
+    displayQuestion();
   </script>
 </body>
 </html>
