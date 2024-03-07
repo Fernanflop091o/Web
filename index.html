@@ -3,49 +3,80 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mini Juego de Adivinanza</title>
+<title>Mini Juego del Dinosaurio</title>
 <style>
   body {
-    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
   }
-  #container {
-    text-align: center;
-    margin-top: 50px;
+  #game {
+    width: 100%;
+    height: 100%;
+    background-color: #f7f7f7;
+    position: relative;
+    overflow: hidden;
   }
-  #output {
-    font-size: 20px;
-    margin-bottom: 20px;
+  #dinosaur {
+    width: 50px;
+    height: 50px;
+    background-color: #000;
+    position: absolute;
+    bottom: 0;
+    left: 50px;
+    transition: bottom 0.2s ease-in-out;
+  }
+  #cactus {
+    width: 20px;
+    height: 30px;
+    background-color: #008000;
+    position: absolute;
+    bottom: 0;
+    right: -20px;
   }
 </style>
 </head>
 <body>
-  <div id="container">
-    <h1>Mini Juego de Adivinanza</h1>
-    <p>Estoy pensando en un número entre 1 y 100. ¿Puedes adivinar cuál es?</p>
-    <input type="number" id="guess" placeholder="Introduce tu adivinanza">
-    <button onclick="checkGuess()">Adivinar</button>
-    <p id="output"></p>
+  <div id="game">
+    <div id="dinosaur"></div>
+    <div id="cactus"></div>
   </div>
 
   <script>
-    // Generar un número aleatorio entre 1 y 100
-    const randomNumber = Math.floor(Math.random() * 100) + 1;
+    const dinosaur = document.getElementById('dinosaur');
+    const cactus = document.getElementById('cactus');
 
-    function checkGuess() {
-      const guessInput = document.getElementById('guess');
-      const guess = parseInt(guessInput.value);
-
-      if (guess === randomNumber) {
-        document.getElementById('output').innerText = '¡Felicidades! ¡Has adivinado el número correcto!';
-      } else if (guess < randomNumber) {
-        document.getElementById('output').innerText = 'Demasiado bajo. Intenta de nuevo.';
-      } else {
-        document.getElementById('output').innerText = 'Demasiado alto. Intenta de nuevo.';
+    // Función para saltar el dinosaurio
+    function jump() {
+      if (dinosaur.style.bottom !== '100px') {
+        dinosaur.style.bottom = '100px';
+        setTimeout(() => {
+          dinosaur.style.bottom = '0';
+        }, 200);
       }
-
-      // Limpiar el campo de adivinanza después de cada intento
-      guessInput.value = '';
     }
+
+    // Detectar teclas de flecha hacia arriba y espacio para saltar
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowUp' || event.code === 'Space') {
+        jump();
+      }
+    });
+
+    // Animar el cactus moviéndolo hacia la izquierda
+    setInterval(() => {
+      cactus.style.right = parseInt(cactus.style.right) + 5 + 'px';
+      if (parseInt(cactus.style.right) >= window.innerWidth) {
+        cactus.style.right = '-20px';
+      }
+      // Detectar colisión entre el dinosaurio y el cactus
+      const dinosaurBottom = parseInt(dinosaur.style.bottom);
+      const cactusRight = parseInt(cactus.style.right);
+      if (cactusRight < 100 && cactusRight > 0 && dinosaurBottom === 0) {
+        alert('Game Over');
+        location.reload(); // Recargar la página para reiniciar el juego
+      }
+    }, 50);
   </script>
 </body>
 </html>
