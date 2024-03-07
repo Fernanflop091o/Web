@@ -3,32 +3,74 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Añadir Nombre de Roblox</title>
+<title>Subir Archivos a Google Drive</title>
+<script src="https://apis.google.com/js/api.js"></script>
 </head>
 <body>
-  <h1>Añadir Nombre de Roblox</h1>
+  <h1>Subir Archivos a Google Drive</h1>
 
-  <form id="robloxForm">
-    <label for="robloxUsername">Nombre de Roblox:</label>
-    <input type="text" id="robloxUsername" name="robloxUsername">
-    <button type="submit">Añadir</button>
-  </form>
+  <input type="file" id="fileInput">
+  <button onclick="uploadFile()">Subir Archivo</button>
 
   <script>
-    document.getElementById('robloxForm').addEventListener('submit', function(event) {
-      event.preventDefault();
-      
-      // Obtener el nombre de Roblox ingresado por el usuario
-      const robloxUsername = document.getElementById('robloxUsername').value;
+    // Inicializar la API de Google Drive
+    function initClient() {
+      gapi.client.init({
+        apiKey: 'YOUR_API_KEY',
+        clientId: 'YOUR_CLIENT_ID',
+        discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest'],
+        scope: 'https://www.googleapis.com/auth/drive.file'
+      }).then(() => {
+        console.log('Google Drive API initialized');
+      }).catch((error) => {
+        console.error('Error initializing Google Drive API:', error);
+      });
+    }
 
-      // Aquí puedes enviar el nombre de Roblox a tu servidor para procesarlo o almacenarlo en una base de datos
-      // Por ejemplo, puedes usar Firebase, MongoDB, etc.
+    // Cargar la API de Google Drive
+    gapi.load('client', initClient);
 
-      // Ejemplo de cómo mostrar el nombre de Roblox en la consola
-      console.log('Nombre de Roblox:', robloxUsername);
+    // Función para subir un archivo a Google Drive
+    function uploadFile() {
+      const fileInput = document.getElementById('fileInput');
+      const file = fileInput.files[0];
       
-      // Puedes redirigir al usuario a Roblox o realizar otras acciones después de procesar el nombre
-    });
+      if (file) {
+        const metadata = {
+          name: file.name,
+          mimeType: file.type
+        };
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const fileData = event.target.result;
+          const base64Data = btoa(fileData);
+
+          const requestBody = {
+            name: file.name,
+            mimeType: file.type,
+            parents: ['YOUR_FOLDER_ID'], // ID de la carpeta en la que quieres guardar el archivo
+            media: {
+              mimeType: file.type,
+              body: base64Data
+            }
+          };
+
+          gapi.client.drive.files.create({
+            resource: requestBody
+          }).then((response) => {
+            console.log('Archivo subido:', response.result);
+            alert('¡Archivo subido exitosamente a Google Drive!');
+          }).catch((error) => {
+            console.error('Error al subir el archivo a Google Drive:', error);
+            alert('Error al subir el archivo a Google Drive');
+          });
+        };
+        reader.readAsBinaryString(file);
+      } else {
+        alert('Por favor selecciona un archivo');
+      }
+    }
   </script>
 </body>
 </html>
